@@ -122,6 +122,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &197133807
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 197133808}
+  m_Layer: 0
+  m_Name: Barrel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &197133808
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197133807}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.16, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1936294292}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &270760374
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -227,7 +258,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 146f398569cb3ab4a88da1216f3b1aef,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 197133808}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 146f398569cb3ab4a88da1216f3b1aef,
         type: 3}
@@ -546,7 +581,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &975132963
+--- !u!1 &1611194758
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -554,43 +589,45 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 975132965}
-  - component: {fileID: 975132964}
+  - component: {fileID: 1611194759}
+  - component: {fileID: 1611194760}
   m_Layer: 0
-  m_Name: AsteroidManager
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &975132964
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 975132963}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbe57e7c269a4d44e8372efa19a51467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  asteroidMaterial: {fileID: 2100000, guid: 6f6d82cc54d3b4041a07a4816471291b, type: 2}
---- !u!4 &975132965
+--- !u!4 &1611194759
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 975132963}
+  m_GameObject: {fileID: 1611194758}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.806809, y: 0.41655192, z: 1.7924418}
+  m_LocalPosition: {x: 5.196688, y: 12.94559, z: 1.4481939}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1611194760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1611194758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2de5ec281c9e3bb43a02dad8b32585f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  asteroidPrefab: {fileID: 3565592179616876542, guid: 43e081310b4499b43a9caa1ce17bd668,
+    type: 3}
+  speedRange: {x: 5, y: 15}
 --- !u!1 &1936294288 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 146f398569cb3ab4a88da1216f3b1aef,
@@ -686,12 +723,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50144133e9b9a0046b4dfcf08677c312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 5
-  acceleration: 3
+  maxSpeed: 20
+  acceleration: 40
   drag: 0.1
   maxTurnSpeed: 720
-  turnDrag: 1
-  turnAcceleration: 90
+  turnDrag: 5
+  turnAcceleration: 720
+  bulletSpeed: 50
+  bulletPrefab: {fileID: 2304548366311411892, guid: 64d77e85d7b93b04e9980cb6ddd739f3,
+    type: 3}
+--- !u!4 &1936294292 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 146f398569cb3ab4a88da1216f3b1aef,
+    type: 3}
+  m_PrefabInstance: {fileID: 270760374}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2002091906
 GameObject:
   m_ObjectHideFlags: 0
@@ -750,4 +796,4 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 270760374}
   - {fileID: 2002091908}
-  - {fileID: 975132965}
+  - {fileID: 1611194759}
