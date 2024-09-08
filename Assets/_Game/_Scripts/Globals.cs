@@ -5,10 +5,10 @@ using UnityEngine;
 
 public static class Globals
 {
-    public static int ASTEROID_SEGMENTS = 10;
-    public static int ASTEROID_MAX = 200;
-    public static int BULLET_MAX = 200;
-    public static float ARENA_BUFFER = 5f;
+    public const int ASTEROID_SEGMENTS = 10;
+    public const int ASTEROID_MAX = 200;
+    public const int BULLET_MAX = 200;
+    public const float ARENA_BUFFER = 5f;
 
     public struct AsteroidTypeData
     {
@@ -22,12 +22,12 @@ public static class Globals
         }
     }
 
-    public static Dictionary<AsteroidType, AsteroidTypeData> ASTEROID_TYPE_MAP = new Dictionary<AsteroidType, AsteroidTypeData>
+    public static readonly Dictionary<AsteroidType, AsteroidTypeData> ASTEROID_TYPE_MAP = new()
     {
-        {AsteroidType.Small, new AsteroidTypeData(1f, 1) },
-        {AsteroidType.Medium, new AsteroidTypeData(2.2f, 5) },
-        {AsteroidType.Large, new AsteroidTypeData(4f, 16) }
+        {AsteroidType.Small, new AsteroidTypeData(1f, 2) },
+        {AsteroidType.Medium, new AsteroidTypeData(2.2f, 10) },
+        {AsteroidType.Large, new AsteroidTypeData(4f, 50) }
     };
-    public static AsteroidType[] ASTEROID_TYPES = ASTEROID_TYPE_MAP.Keys.ToArray();
+    public static readonly AsteroidType[] ASTEROID_TYPES = ASTEROID_TYPE_MAP.Keys.ToArray();
 
 }

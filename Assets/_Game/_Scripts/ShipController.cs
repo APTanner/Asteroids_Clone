@@ -164,11 +164,7 @@ public class ShipController : Singleton<ShipController>
         m_rb.velocity = Vector2.zero;
         this.transform.position = Vector2.zero;
 
-        Bullet[] bullets = FindObjectsOfType<Bullet>();
-        for (int i = 0; i < bullets.Length; ++i)
-        {
-            ReleaseBullet(bullets[i]);
-        }
+        m_bulletPool.Reset();
 
         GameManager.Instance.Restart();
     }

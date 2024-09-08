@@ -20,6 +20,7 @@ public class GameManager : Singleton<GameManager>
         base.Awake();
         m_asteroidPool = new ObjectPool<Asteroid>(asteroidPrefab, Globals.ASTEROID_MAX, this.transform);
     }
+
     private void Start()
     {
         Camera cam = Camera.main;
@@ -97,7 +98,7 @@ public class GameManager : Singleton<GameManager>
 
     public void LeaveAsteroid(Asteroid asteroid)
     {
-        asteroid.Disable();
+        asteroid.gameObject.SetActive(false);
         m_asteroidPool.Release(asteroid);
     }
 
@@ -106,12 +107,10 @@ public class GameManager : Singleton<GameManager>
         AsteroidType oldType = asteroid.AsteroidType;
         if (asteroid.AsteroidType == AsteroidType.Small)
         {
-            asteroid.Disable();
+            asteroid.gameObject.SetActive(false);
             m_asteroidPool.Release(asteroid);
             return;
         }
-
-        Debug.Log("Spawning");
 
         AsteroidType newType = (AsteroidType)((int)asteroid.AsteroidType - 1);
 
@@ -129,8 +128,6 @@ public class GameManager : Singleton<GameManager>
             return;
         }
 
-        Debug.Log("Spawning another");
-
         Vector2 pos2 = new Vector2(Random.Range(-Globals.ASTEROID_TYPE_MAP[oldType].Size, 0), Random.Range(-Globals.ASTEROID_TYPE_MAP[oldType].Size, 0));
         Vector2 v2 = new Vector2(Random.Range(-4f, -2), Random.Range(-4f, -2));
 
@@ -139,14 +136,7 @@ public class GameManager : Singleton<GameManager>
 
     public void Restart()
     {
-        Asteroid[] asteroid = FindObjectsOfType<Asteroid>();
-
-        // Iterate through the array and perform actions
-        for (int i = 0; i < asteroid.Length; i++)
-        {
-            asteroid[i].Disable();
-            m_asteroidPool.Release(asteroid[i]);
-        }
+        m_asteroidPool.Reset();
     }
 }
 

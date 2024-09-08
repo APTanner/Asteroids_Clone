@@ -50,4 +50,15 @@ public class ObjectPool<T> where T : Component
         newObj.gameObject.SetActive(false);
         m_queue.Enqueue(newObj);
     }
+
+    public void Reset()
+    {
+        m_queue.Clear();
+        T[] objects = Resources.FindObjectsOfTypeAll<T>();
+        for (int i = 0; i < objects.Length; ++i)
+        {
+            Release(objects[i]);
+            objects[i].gameObject.SetActive(false);
+        }
+    }
 }

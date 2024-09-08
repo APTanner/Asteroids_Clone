@@ -31,13 +31,12 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Asteroid asteroid;
-        if (!other.gameObject.TryGetComponent<Asteroid>(out asteroid))
+        if (!other.gameObject.TryGetComponent<Asteroid>(out Asteroid asteroid))
         {
             return;
         }
 
-        asteroid.TakeDamage();
+        asteroid.TakeDamage(transform.position);
 
         ShipController.Instance.ReleaseBullet(this);
     }

@@ -20,7 +20,7 @@ public class AsteroidBuilder
         Color[] colors = new Color[asteroidSegments];
         for (int i = 0; i < asteroidSegments; ++i)
         {
-            colors[i] = new Color(0, 1, 0, 0);
+            colors[i] = new Color();
         }
 
         int[] indicies = new int[asteroidSegments * 2];
