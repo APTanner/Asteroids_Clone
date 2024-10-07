@@ -1,10 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectPool<T> where T : Component
 {
-    private readonly Queue<T> m_queue = new Queue<T>();
+    private readonly Queue<T> m_queue = new();
+    private readonly HashSet<T> m_objects = new();
     private readonly T prefab;
     private readonly Transform m_parentTransform = null;
 
@@ -32,13 +32,17 @@ public class ObjectPool<T> where T : Component
 
     public void Release(T obj)
     {
+        if (!m_objects.Contains(obj))
+        {
+            Debug.LogError($"Tried to add an object of type '{typeof(T)}' to an object pool it is not a part of.");
+        }
         m_queue.Enqueue(obj);
     }
 
     private void CreateObject()
     {
         T newObj;
-        if (m_parentTransform != null) 
+        if (m_parentTransform != null)
         {
             newObj = Object.Instantiate(prefab, m_parentTransform);
         }
@@ -49,16 +53,16 @@ public class ObjectPool<T> where T : Component
 
         newObj.gameObject.SetActive(false);
         m_queue.Enqueue(newObj);
+        m_objects.Add(newObj);
     }
 
     public void Reset()
     {
         m_queue.Clear();
-        T[] objects = Resources.FindObjectsOfTypeAll<T>();
-        for (int i = 0; i < objects.Length; ++i)
+        foreach (T obj in m_objects)
         {
-            Release(objects[i]);
-            objects[i].gameObject.SetActive(false);
+            Release(obj);
+            obj.gameObject.SetActive(false);
         }
     }
 }

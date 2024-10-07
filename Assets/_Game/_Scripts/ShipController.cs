@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class ShipController : Singleton<ShipController>
@@ -23,6 +20,10 @@ public class ShipController : Singleton<ShipController>
     [Header("Bullets")]
     public float bulletSpeed;
     [SerializeField] private Bullet bulletPrefab;
+    [SerializeField] private ParticleSystem bulletHitParticle;
+
+    [Header("Explosion")]
+    [SerializeField] private GameObject explosion;
 
     private PlayerInput m_playerInput;
     private Rigidbody2D m_rb;
@@ -30,8 +31,6 @@ public class ShipController : Singleton<ShipController>
     private float m_turnInput;
     private float m_forwardInput;
     private bool m_shoot;
-
-    private ObjectPool<Bullet> m_bulletPool;
 
     private Transform m_barrel;
 
@@ -45,8 +44,10 @@ public class ShipController : Singleton<ShipController>
         {
             Debug.LogError("Ship controller requires a rigidbody to function");
         }
-        m_bulletPool = new ObjectPool<Bullet>(bulletPrefab, Globals.BULLET_MAX);
+
         m_barrel = transform.Find("Barrel");
+
+        explosion.SetActive(false);
     }
 
     private void OnEnable()
@@ -57,11 +58,6 @@ public class ShipController : Singleton<ShipController>
     private void OnDisable()
     {
         m_playerInput.Disable();
-    }
-
-    private void Start()
-    {
-        
     }
 
     private void Update()
@@ -143,29 +139,28 @@ public class ShipController : Singleton<ShipController>
             return;
         }
 
+        BulletManager.Instance.Fire(transform, m_rb.velocity);
+
         m_shoot = false;
-
-        Bullet bullet;
-        if (!m_bulletPool.TryGet(out bullet)) {
-            return;
-        }
-
-        bullet.Fire(m_barrel.position, transform.up, m_rb.velocity);
-    }
-
-    public void ReleaseBullet(Bullet bullet)
-    {
-        bullet.gameObject.SetActive(false);
-        m_bulletPool.Release(bullet);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        explosion.SetActive(true);
+        explosion.transform.position = transform.position;
+        ParticleSystem[] explosionSystems = explosion.GetComponentsInChildren<ParticleSystem>();
+        foreach (ParticleSystem ps in explosionSystems)
+        {
+            ps.Play();
+        }
+
+        GameManager.Instance.Destroyed();
+    }
+
+    public void Reset()
+    {
+        explosion.SetActive(false);
         m_rb.velocity = Vector2.zero;
-        this.transform.position = Vector2.zero;
-
-        m_bulletPool.Reset();
-
-        GameManager.Instance.Restart();
+        transform.SetPositionAndRotation(Vector2.zero, Quaternion.identity);
     }
 }

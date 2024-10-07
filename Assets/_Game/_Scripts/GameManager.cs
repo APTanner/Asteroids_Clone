@@ -1,24 +1,34 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
+    [Header("Score")]
+    [SerializeField] private TextMeshProUGUI scoreText;
+
     [Header("Options")]
     [SerializeField] private Asteroid asteroidPrefab;
     [SerializeField] private Vector2 speedRange;
+
+    [Header("Particle Systems")]
+    [SerializeField] private ParticleSystem asteroidDestruction;
 
     public Vector2 CameraBounds { get; private set; }
     public AsteroidBuilder AsteroidBuilder { get; private set; } = new AsteroidBuilder();
 
     private ObjectPool<Asteroid> m_asteroidPool;
+    private ObjectPool<ParticleSystem> m_destructionParticlePool;
+
+    private int m_score;
+
+    private GameObject m_playerGameObject;
 
     protected override void Awake()
     {
         base.Awake();
-        m_asteroidPool = new ObjectPool<Asteroid>(asteroidPrefab, Globals.ASTEROID_MAX, this.transform);
+        m_asteroidPool = new ObjectPool<Asteroid>(asteroidPrefab, Globals.ASTEROID_MAX);
+        m_destructionParticlePool = new ObjectPool<ParticleSystem>(asteroidDestruction, 20);
     }
 
     private void Start()
@@ -27,6 +37,8 @@ public class GameManager : Singleton<GameManager>
         float camHeight = cam.orthographicSize;
         float camWidth = camHeight * cam.aspect;
         CameraBounds = new Vector2(camWidth, camHeight);
+
+        m_playerGameObject = ShipController.Instance.gameObject;
 
         StartCoroutine(SpawnAsteroids(1f));
     }
@@ -105,6 +117,19 @@ public class GameManager : Singleton<GameManager>
     public void ExplodeAsteroid(Asteroid asteroid, Vector2 velocity)
     {
         AsteroidType oldType = asteroid.AsteroidType;
+
+        ++m_score;
+        scoreText.text = m_score.ToString();
+
+        if (m_destructionParticlePool.TryGet(out ParticleSystem ps))
+        {
+            ps.gameObject.SetActive(true);
+            ps.transform.position = asteroid.transform.position;
+            float scale = Globals.ASTEROID_TYPE_MAP[asteroid.AsteroidType].Size / 3f;
+            StartCoroutine(PlayParticleSystem(ps, scale));
+        }
+
+
         if (asteroid.AsteroidType == AsteroidType.Small)
         {
             asteroid.gameObject.SetActive(false);
@@ -134,9 +159,39 @@ public class GameManager : Singleton<GameManager>
         otherAsteroid.SetMovement(oldPos + pos2, velocity + v2);
     }
 
-    public void Restart()
+    private IEnumerator PlayParticleSystem(ParticleSystem ps, float scale)
     {
+        ps.transform.localScale = scale * Vector3.one;
+        ps.Play();
+
+        while (ps.isPlaying)
+        {
+            yield return null;
+        }
+
+        ps.gameObject.SetActive(false);
+        m_destructionParticlePool.Release(ps);
+    }
+
+    public void Destroyed()
+    {
+        m_playerGameObject.SetActive(false);
+        StartCoroutine(Destruction());
+    }
+
+    private IEnumerator Destruction()
+    {
+        yield return new WaitForSeconds(3f);
+
+        BulletManager.Instance.Restart();
         m_asteroidPool.Reset();
+        m_destructionParticlePool.Reset();
+
+        m_score = 0;
+        scoreText.text = m_score.ToString();
+
+        m_playerGameObject.SetActive(true);
+        ShipController.Instance.Reset();
     }
 }
 

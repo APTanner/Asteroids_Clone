@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -18,14 +16,14 @@ public class Bullet : MonoBehaviour
 
     private void Awake()
     {
-        m_rb = GetComponent<Rigidbody2D>();    
+        m_rb = GetComponent<Rigidbody2D>();
     }
 
     void FixedUpdate()
     {
         if (Helpers.OutOfBounds(transform.position, 0, true))
         {
-            ShipController.Instance.ReleaseBullet(this);
+            BulletManager.Instance.Release(this);
         }
     }
 
@@ -38,6 +36,6 @@ public class Bullet : MonoBehaviour
 
         asteroid.TakeDamage(transform.position);
 
-        ShipController.Instance.ReleaseBullet(this);
+        BulletManager.Instance.Release(this);
     }
 }
