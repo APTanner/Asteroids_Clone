@@ -1,7 +1,7 @@
 # Asteroids_Clone
 **Simple Game Clone**
 
-![Screenshot 2024-09-08 134707](https://github.com/user-attachments/assets/69fdf8c0-58c8-4472-81b9-3bd35fd1e9c6)
+![Screenshot 2024-10-06 210721](https://github.com/user-attachments/assets/ad6b4122-36d1-4e00-8c50-41c78a0e8b28)
 
 ## Features
 ### Object Pooling 
